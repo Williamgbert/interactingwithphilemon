@@ -1,191 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interactive Bible Study - Philemon</title>
-<style>
-  body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
-  .container { max-width: 900px; margin: auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-  h1 { text-align: center; color: #333; }
-  .toolbar { margin-bottom: 15px; text-align: center; }
-  .toolbar button, select, input { margin: 0 5px; padding: 5px 10px; cursor: pointer; }
-  .verse { position: relative; margin: 12px 0; line-height: 1.6; }
-  .verse-number { font-weight: bold; margin-right: 5px; cursor: pointer; }
-  .tooltip { display: none; position: absolute; background: #333; color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 12px; top: 20px; left: 0; z-index: 10; }
-  .verse:hover .tooltip { display: block; }
-  .collapsible { background-color: #eee; color: #444; cursor: pointer; padding: 10px; width: 100%; border: none; text-align: left; outline: none; font-size: 15px; border-radius: 5px; margin-top: 5px; }
-  .content { padding: 10px 15px; display: none; overflow: hidden; background-color: #f9f9f9; border-left: 3px solid #ccc; margin-bottom: 10px; border-radius: 5px; }
-  .journal { width: 100%; min-height: 100px; margin-top: 10px; padding: 10px; font-size: 14px; border-radius: 5px; border: 1px solid #ccc; }
-  .highlight { background-color: yellow; }
-  .annotation { font-size: 12px; color: #555; display:block; margin-top: 5px; padding: 5px; background: #f0f0f0; border-left: 2px solid #999; border-radius: 3px;}
-  .question { background-color: #e8f0fe; padding: 8px; border-left: 3px solid #4285f4; margin: 10px 0; border-radius: 4px; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Bible Study - Philemon</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+    .container { max-width: 900px; margin: auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #333; }
+    .toolbar { margin-bottom: 15px; text-align: center; }
+    .toolbar button, select, input { margin: 0 5px; padding: 5px 10px; cursor: pointer; }
+    .verse { position: relative; margin: 12px 0; line-height: 1.6; }
+    .verse-number { font-weight: bold; margin-right: 5px; cursor: pointer; }
+    .tooltip { display: none; position: absolute; background: #333; color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 12px; top: 20px; left: 0; z-index: 10; }
+    .verse:hover .tooltip { display: block; }
+    .collapsible { background-color: #eee; color: #444; cursor: pointer; padding: 10px; width: 100%; border: none; text-align: left; outline: none; font-size: 15px; border-radius: 5px; margin-top: 5px; }
+    .content { padding: 10px 15px; display: none; overflow: hidden; background-color: #f9f9f9; border-left: 3px solid #ccc; margin-bottom: 10px; border-radius: 5px; }
+    .journal { width: 100%; min-height: 100px; margin-top: 10px; padding: 10px; font-size: 14px; border-radius: 5px; border: 1px solid #ccc; }
+    .highlight { background-color: yellow; }
+    .annotation { font-size: 12px; color: #555; display:block; margin-top: 5px; padding: 5px; background: #f0f0f0; border-left: 2px solid #999; border-radius: 3px;}
+    .question { background-color: #e8f0fe; padding: 8px; border-left: 3px solid #4285f4; margin: 10px 0; border-radius: 4px; }
+  </style>
 </head>
 <body>
-<div class="container">
-  <h1>Interactive Bible Study - Philemon</h1>
+  <div class="container">
+    <h1>Interactive Bible Study - Philemon</h1>
 
-  <div class="toolbar">
-    <label for="version">Version:</label>
-    <select id="version">
-      <option value="NIV">NIV</option>
-      <option value="ESV">ESV</option>
-      <option value="KJV">KJV</option>
-    </select>
-    <button onclick="toggleVerses()">Toggle Verse Numbers</button>
-    <button onclick="toggleHeadings()">Toggle Headings</button>
-    <button onclick="toggleHighlights()">Toggle Highlights</button>
-    <input type="text" id="searchInput" placeholder="Search..." oninput="searchVerses()"/>
-    <button onclick="exportJournal()">Export Journal</button>
+    <div class="toolbar">
+      <label for="version">Version:</label>
+      <select id="version">
+        <option value="ESV">ESV</option>
+        <option value="NIV">NIV</option>
+        <option value="KJV">KJV</option>
+      </select>
+      <button onclick="toggleVerses()">Toggle Verse Numbers</button>
+      <button onclick="toggleHeadings()">Toggle Headings</button>
+      <button onclick="toggleHighlights()">Toggle Highlights</button>
+      <input type="text" id="searchInput" placeholder="Search..." oninput="searchVerses()"/>
+      <button onclick="exportJournal()">Export Journal</button>
+    </div>
+
+    <div id="headings">
+      <h2>Paul’s Appeal for Onesimus</h2>
+    </div>
+
+    <div id="philemonText"></div>
+
+    <h3>Your Journal</h3>
+    <textarea id="globalJournal" class="journal" placeholder="Write overall reflections here..."></textarea>
   </div>
 
-  <div id="headings">
-    <h2>Paul’s Appeal for Onesimus</h2>
-  </div>
+  <script>
+    // State
+    let showVerses = true;
+    let showHeadings = true;
+    let highlightsVisible = true;
 
-  <div id="philemonText"></div>
+    // Load Bible from API
+    async function loadBible(version) {
+      const container = document.getElementById('philemonText');
+      container.innerHTML = 'Loading...';
+      const response = await fetch(`https://bible-api.com/philemon?translation=${version}`);
+      const data = await response.json();
+      container.innerHTML = '';
+      data.verses.forEach(v => {
+        // Create verse div
+        let verseDiv = document.createElement('div');
+        verseDiv.classList.add('verse');
+        verseDiv.dataset.verse = v.verse;
 
-  <h3>Your Journal</h3>
-  <textarea id="globalJournal" class="journal" placeholder="Write overall reflections here..."></textarea>
-</div>
+        // Verse number & text
+        let verseNumber = document.createElement('span');
+        verseNumber.classList.add('verse-number');
+        verseNumber.textContent = v.verse;
+        verseDiv.appendChild(verseNumber);
 
-<script>
-// State
-let showVerses = true;
-let showHeadings = true;
-let highlightsVisible = true;
+        let verseText = document.createElement('span');
+        verseText.classList.add('verse-text');
+        verseText.textContent = v.text;
+        verseDiv.appendChild(verseText);
 
-// Load Bible from API
-async function loadBible(version) {
-  const container = document.getElementById('philemonText');
-  container.innerHTML = 'Loading...';
-  const response = await fetch(`https://bible-api.com/philemon?translation=${version}`);
-  const data = await response.json();
-  container.innerHTML = '';
-  data.verses.forEach(v => {
-    // Create verse div
-    let verseDiv = document.createElement('div');
-    verseDiv.classList.add('verse');
-    verseDiv.dataset.verse = v.verse;
+        // Tooltip for reference
+        let tooltip = document.createElement('span');
+        tooltip.classList.add('tooltip');
+        tooltip.textContent = v.reference || '';
+        verseDiv.appendChild(tooltip);
 
-    // Verse number & text
-    let verseNumber = document.createElement('span');
-    verseNumber.classList.add('verse-number');
-    verseNumber.textContent = v.verse;
-    verseDiv.appendChild(verseNumber);
+        // Per-verse annotation
+        let annotation = document.createElement('div');
+        annotation.classList.add('annotation');
+        annotation.contentEditable = true;
+        annotation.textContent = localStorage.getItem(`annotation_${version}_${v.verse}`) || '';
+        annotation.addEventListener('input', () => {
+          localStorage.setItem(`annotation_${version}_${v.verse}`, annotation.textContent);
+        });
+        verseDiv.appendChild(annotation);
 
-    let verseText = document.createElement('span');
-    verseText.classList.add('verse-text');
-    verseText.textContent = v.text;
-    verseDiv.appendChild(verseText);
+        // Highlight click
+        verseText.addEventListener('click', function() {
+          this.classList.toggle('highlight');
+          localStorage.setItem(`highlight_${version}_${v.verse}`, this.classList.contains('highlight'));
+        });
+        if(localStorage.getItem(`highlight_${version}_${v.verse}`) === 'true') {
+          verseText.classList.add('highlight');
+        }
 
-    // Tooltip for reference
-    let tooltip = document.createElement('span');
-    tooltip.classList.add('tooltip');
-    tooltip.textContent = v.reference || '';
-    verseDiv.appendChild(tooltip);
+        container.appendChild(verseDiv);
 
-    // Per-verse annotation
-    let annotation = document.createElement('div');
-    annotation.classList.add('annotation');
-    annotation.contentEditable = true;
-    annotation.textContent = localStorage.getItem(`annotation_${version}_${v.verse}`) || '';
-    annotation.addEventListener('input', () => {
-      localStorage.setItem(`annotation_${version}_${v.verse}`, annotation.textContent);
-    });
-    verseDiv.appendChild(annotation);
+        // Collapsible commentary
+        let collBtn = document.createElement('button');
+        collBtn.classList.add('collapsible');
+        collBtn.textContent = `Commentary on Verse ${v.verse}`;
+        let content = document.createElement('div');
+        content.classList.add('content');
+        content.innerHTML = `<p>Commentary for verse ${v.verse}. Expand for notes.</p>`;
+        collBtn.addEventListener('click', () => {
+          content.style.display = content.style.display === 'block' ? 'none' : 'block';
+        });
+        container.appendChild(collBtn);
+        container.appendChild(content);
 
-    // Highlight click
-    verseText.addEventListener('click', function() {
-      this.classList.toggle('highlight');
-      localStorage.setItem(`highlight_${version}_${v.verse}`, this.classList.contains('highlight'));
-    });
-    if(localStorage.getItem(`highlight_${version}_${v.verse}`) === 'true') {
-      verseText.classList.add('highlight');
+        // Reflection question
+        let question = document.createElement('div');
+        question.classList.add('question');
+        question.textContent = `Reflection: How does verse ${v.verse} speak to your life?`;
+        container.appendChild(question);
+
+        // Per-verse journaling
+        let journal = document.createElement('textarea');
+        journal.classList.add('journal');
+        journal.placeholder = `Your thoughts on verse ${v.verse}...`;
+        journal.value = localStorage.getItem(`journal_${version}_${v.verse}`) || '';
+        journal.addEventListener('input', () => {
+          localStorage.setItem(`journal_${version}_${v.verse}`, journal.value);
+        });
+        container.appendChild(journal);
+      });
     }
 
-    container.appendChild(verseDiv);
+    // Initial load
+    const versionSelect = document.getElementById('version');
+    loadBible(versionSelect.value);
 
-    // Collapsible commentary
-    let collBtn = document.createElement('button');
-    collBtn.classList.add('collapsible');
-    collBtn.textContent = `Commentary on Verse ${v.verse}`;
-    let content = document.createElement('div');
-    content.classList.add('content');
-    content.innerHTML = `<p>Commentary for verse ${v.verse}. Expand for notes.</p>`;
-    collBtn.addEventListener('click', () => {
-      content.style.display = content.style.display === 'block' ? 'none' : 'block';
+    // Version switching
+    versionSelect.addEventListener('change', () => {
+      loadBible(versionSelect.value);
     });
-    container.appendChild(collBtn);
-    container.appendChild(content);
 
-    // Reflection question
-    let question = document.createElement('div');
-    question.classList.add('question');
-    question.textContent = `Reflection: How does verse ${v.verse} speak to your life?`;
-    container.appendChild(question);
+    // Toggles
+    function toggleVerses() {
+      showVerses = !showVerses;
+      document.querySelectorAll('.verse-number').forEach(v => v.style.display = showVerses ? 'inline' : 'none');
+    }
 
-    // Per-verse journaling
-    let journal = document.createElement('textarea');
-    journal.classList.add('journal');
-    journal.placeholder = `Your thoughts on verse ${v.verse}...`;
-    journal.value = localStorage.getItem(`journal_${version}_${v.verse}`) || '';
-    journal.addEventListener('input', () => {
-      localStorage.setItem(`journal_${version}_${v.verse}`, journal.value);
-    });
-    container.appendChild(journal);
-  });
-}
+    function toggleHeadings() {
+      showHeadings = !showHeadings;
+      document.getElementById('headings').style.display = showHeadings ? 'block' : 'none';
+    }
 
-// Initial load
-const versionSelect = document.getElementById('version');
-loadBible(versionSelect.value);
+    function toggleHighlights() {
+      highlightsVisible = !highlightsVisible;
+      document.querySelectorAll('.highlight').forEach(h => h.style.backgroundColor = highlightsVisible ? 'yellow' : 'transparent');
+    }
 
-// Version switching
-versionSelect.addEventListener('change', () => {
-  loadBible(versionSelect.value);
-});
+    // Search
+    function searchVerses() {
+      const term = document.getElementById('searchInput').value.toLowerCase();
+      document.querySelectorAll('.verse').forEach(v => {
+        const text = v.querySelector('.verse-text').textContent.toLowerCase();
+        v.style.display = text.includes(term) ? 'block' : 'none';
+      });
+    }
 
-// Toggles
-function toggleVerses() {
-  showVerses = !showVerses;
-  document.querySelectorAll('.verse-number').forEach(v => v.style.display = showVerses ? 'inline' : 'none');
-}
-
-function toggleHeadings() {
-  showHeadings = !showHeadings;
-  document.getElementById('headings').style.display = showHeadings ? 'block' : 'none';
-}
-
-function toggleHighlights() {
-  highlightsVisible = !highlightsVisible;
-  document.querySelectorAll('.highlight').forEach(h => h.style.backgroundColor = highlightsVisible ? 'yellow' : 'transparent');
-}
-
-// Search
-function searchVerses() {
-  const term = document.getElementById('searchInput').value.toLowerCase();
-  document.querySelectorAll('.verse').forEach(v => {
-    const text = v.querySelector('.verse-text').textContent.toLowerCase();
-    v.style.display = text.includes(term) ? 'block' : 'none';
-  });
-}
-
-// Export journal
-function exportJournal() {
-  let text = "Global Journal:\n" + document.getElementById('globalJournal').value + "\n\n";
-  document.querySelectorAll('.verse').forEach(v => {
-    const verseNum = v.dataset.verse;
-    const journalText = v.querySelector('.journal')?.value;
-    if(journalText) text += `Verse ${verseNum}: ${journalText}\n`;
-  });
-  const blob = new Blob([text], {type: "text/plain"});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = "philemon_journal.txt";
-  a.click();
-}
-</script>
+    // Export journal
+    function exportJournal() {
+      let text = "Global Journal:\n" + document.getElementById('globalJournal').value + "\n\n";
+      document.querySelectorAll('.verse').forEach(v => {
+        const verseNum = v.dataset.verse;
+        const journalText = v.querySelector('.journal')?.value;
+        if(journalText) text += `Verse ${verseNum}: ${journalText}\n`;
+      });
+      const blob = new Blob([text], {type: "text/plain"});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = "philemon_journal.txt";
+      a.click();
+    }
+  </script>
 </body>
 </html>
